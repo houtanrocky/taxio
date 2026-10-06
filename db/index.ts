@@ -1,7 +1,7 @@
 import nextEnv from "@next/env";
-import postgres from "postgres";
-import { drizzle } from "drizzle-orm/postgres-js";
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
 nextEnv.loadEnvConfig(process.cwd());
 export const db = process.env.DATABASE_URL
-  ? drizzle(postgres(process.env.DATABASE_URL, { prepare: true, max: 5, fetch_types: false }))
+  ? drizzle(neon(process.env.DATABASE_URL))
   : null;

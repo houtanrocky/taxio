@@ -62,10 +62,16 @@ export async function searchPublishedArticles(query: string): Promise<ArticleRec
 
 export async function getArticlesByCategory(slug: string): Promise<{ category?: Category; articles: ArticleRecord[] }> {
   if (!db) { const category = fallbackCategories.find(item => item.slug === slug); return { category, articles: fallbackArticles.filter(article => article.category.slug === slug) }; }
-  const [categoryRow] = await db.select().from(categoryTable).where(eq(categoryTable.slug, slug)).limit(1);
-  if (!categoryRow) return { articles: [] };
-  const rows = await db.select({ article: articleTable, category: categoryTable }).from(articleTable).leftJoin(categoryTable, eq(articleTable.categoryId, categoryRow.id)).where(and(eq(articleTable.categoryId, categoryRow.id), eq(articleTable.status, "published"))).orderBy(desc(articleTable.publishedAt));
-  return { category: toCategory(categoryRow), articles: uniqueBySlug(rows.map(({ article, category }) => mapArticle(article, category ? toCategory(category) : toCategory(categoryRow)))) };
+  try {
+    const [categoryRow] = await db.select().from(categoryTable).where(eq(categoryTable.slug, slug)).limit(1);
+    if (!categoryRow) return { articles: [] };
+    const rows = await db.select({ article: articleTable, category: categoryTable }).from(articleTable).leftJoin(categoryTable, eq(articleTable.categoryId, categoryRow.id)).where(and(eq(articleTable.categoryId, categoryRow.id), eq(articleTable.status, "published"))).orderBy(desc(articleTable.publishedAt));
+    return { category: toCategory(categoryRow), articles: uniqueBySlug(rows.map(({ article, category }) => mapArticle(article, category ? toCategory(category) : toCategory(categoryRow)))) };
+  } catch (error) {
+    console.error("Failed to load category", slug, error);
+    const category = fallbackCategories.find(item => item.slug === slug);
+    return { category, articles: fallbackArticles.filter(article => article.category.slug === slug) };
+  }
 }
 
 export async function getAuthors() {
