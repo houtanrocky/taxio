@@ -68,7 +68,7 @@ export async function createArticle(_state: ArticleActionState, formData: FormDa
     throw error;
   }
   revalidateContent(input.slug);
-  redirect(`/admin/articles/${encodeURIComponent(input.slug)}`);
+  redirect(`/admin/articles?created=1`);
 }
 
 export async function updateArticle(slug: string, _state: ArticleActionState, formData: FormData): Promise<ArticleActionState> {
@@ -85,11 +85,20 @@ export async function updateArticle(slug: string, _state: ArticleActionState, fo
   }
   revalidateContent(slug);
   if (input.slug !== slug) revalidateContent(input.slug);
-  redirect(`/admin/articles/${encodeURIComponent(input.slug)}`);
+  redirect(`/admin/articles?created=1`);
 }
 
 export async function publishArticle(id: string) {
   if (!db) throw new Error("DATABASE_URL is required to publish articles.");
   await db.update(articles).set({ status: "published", publishedAt: new Date(), updatedAt: new Date() }).where(and(eq(articles.id, id), eq(articles.status, "draft")));
   revalidateContent();
+}
+
+export async function deleteArticle(slug: string) {
+  if (!db) throw new Error("DATABASE_URL is required to delete articles.");
+  const existing = await db.select({ id: articles.id }).from(articles).where(eq(articles.slug, slug)).limit(1);
+  if (!existing[0]) throw new Error("Article not found.");
+  await db.delete(articles).where(eq(articles.id, existing[0].id));
+  revalidateContent(slug);
+  redirect("/admin/articles");
 }
