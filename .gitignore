@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+
+# Next.js / Vite / vinext output
+.next/
+dist/
+.vinext/
+.wrangler/
+.cloudflare/
+out/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+!.env.docker.example
+
+# Local databases and generated files
+db-data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs and runtime files
+*.log
+logs/
+
+# Coverage and caches
+coverage/
+.cache/
+.turbo/
+.eslintcache
+
+# TypeScript build info
+*.tsbuildinfo
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Wrangler local state
+.dev.vars

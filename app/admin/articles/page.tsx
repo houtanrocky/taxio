@@ -1,0 +1,4 @@
+import Link from "next/link";
+import { getAdminArticles } from "../../../lib/content-server";
+export const dynamic = "force-dynamic";
+export default async function AdminArticles(){const articles=await getAdminArticles();return <main className="admin-shell"><div className="container"><div className="section-head"><div><div className="kicker">مدیریت آروان</div><h1>مقالات</h1></div><Link className="button button-primary" href="/admin/articles/new">+ مقاله جدید</Link></div><div className="article-grid">{articles.map(article=><div className="article-card" key={article.id??article.slug}><div className="eyebrow">{article.status==="published"?"منتشر شده":"پیش‌نویس"} · {article.category.name}</div><h3>{article.title}</h3><p>{article.excerpt}</p><div className="card-meta"><span>{article.updatedAt}</span><Link href={`/admin/articles/${article.slug}`}>ویرایش مقاله ←</Link></div></div>)}</div></div></main>}

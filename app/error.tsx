@@ -1,0 +1,1 @@
+"use client"; export default function ErrorState(){return <main className="section"><div className="container empty"><h1>خطایی رخ داد</h1><p>لطفاً دوباره تلاش کنید.</p><button className="button button-primary" onClick={()=>location.reload()}>تلاش دوباره</button></div></main>}

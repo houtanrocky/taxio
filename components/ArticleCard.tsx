@@ -1,0 +1,2 @@
+import type { Article } from "../lib/content";
+export function ArticleCard({article}:{article:Article}){return <article className="article-card"><div className="eyebrow">{article.category.name} <span>·</span> {article.readingTime} دقیقه مطالعه</div><h3><a href={`/articles/${article.slug}`}>{article.title}</a></h3><p>{article.excerpt}</p><div className="card-meta"><span>{article.updatedAt}</span><a href={`/articles/${article.slug}`}>ادامه مطلب ←</a></div></article>}

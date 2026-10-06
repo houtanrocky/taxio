@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: arevan-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-arevan}
+      POSTGRES_USER: ${POSTGRES_USER:-arevan}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-arevan_dev_password}
+    ports:
+      - "${POSTGRES_PORT:-5435}:5432"
+    volumes:
+      - arevan_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-arevan} -d ${POSTGRES_DB:-arevan}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  adminer:
+    image: adminer:4
+    container_name: arevan-adminer
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+
+volumes:
+  arevan_postgres_data:

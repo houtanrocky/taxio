@@ -1,0 +1,1 @@
+import Link from "next/link"; export default function NotFound(){return <main className="section"><div className="container empty"><h1>این صفحه پیدا نشد</h1><p>ممکن است نشانی تغییر کرده باشد.</p><Link className="button button-primary" href="/">بازگشت به صفحه اصلی</Link></div></main>}

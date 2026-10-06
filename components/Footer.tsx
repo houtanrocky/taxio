@@ -1,0 +1,3 @@
+import Link from "next/link";
+import { brand } from "../lib/content";
+export function Footer() { return <footer className="footer"><div className="container footer-grid"><div><Link href="/" className="footer-name">آروان <span>Arevan</span></Link><p>{brand.tagline}</p></div><div><h3>دسترسی سریع</h3><Link href="/articles">مقالات</Link><Link href="/search">جست‌وجو</Link><Link href="/about">درباره آروان</Link></div><div><h3>رویکرد محتوایی</h3><p>آروان برای ارائه محتوای روشن، کاربردی و قابل پیگیری در حوزه‌های مالیاتی و مالی تلاش می‌کند. مطالب تخصصی را با توجه به منابع و زمان انتشار بررسی کنید.</p></div></div><div className="container footer-bottom">© {new Date().getFullYear()} آروان | Arevan</div></footer>; }
