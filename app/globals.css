@@ -501,6 +501,12 @@ nav a:hover,
   margin-bottom: 20px
 }
 
+.breadcrumbs>span {
+  color: #b8c5c2;
+  font-weight: 400;
+  user-select: none;
+}
+
 .article-meta {
   display: flex;
   gap: 17px;
@@ -958,372 +964,254 @@ nav a:hover,
   box-shadow: 0 10px 30px rgba(24, 49, 47, .14)
 }
 
+/* Rich text editor */
 .rich-editor {
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
-  background: #fff
+  background: #fff;
 }
 
 .rich-editor.has-error {
-  border-color: #c45a5a
+  border-color: #c45a5a;
 }
 
+/* Toolbar: sticky on desktop and mobile so the buttons are always reachable */
 .rich-editor-toolbar {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 10px;
+  padding: 8px;
   background: #f5f9f7;
   border-bottom: 1px solid var(--line);
-  flex-wrap: wrap
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 3;
 }
 
-.rich-editor-toolbar button {
+.rich-editor-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.rich-editor-sep {
+  width: 1px;
+  height: 22px;
+  background: #d7e5e0;
+  margin: 0 4px;
+}
+
+/* Large, friendly buttons with icon + Persian label */
+.rich-editor-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   border: 1px solid #cbdcd7;
   background: #fff;
   color: var(--ink);
-  border-radius: 6px;
-  padding: 5px 10px;
+  border-radius: 8px;
+  padding: 7px 10px;
   font: inherit;
-  font-size: 12px;
-  cursor: pointer
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+  position: relative;
+  min-height: 36px;
 }
 
-.rich-editor-toolbar button:hover {
+.rich-editor-btn:hover {
   border-color: var(--teal);
-  color: var(--teal)
+  color: var(--teal);
+  background: #f0f9f6;
 }
 
-.rich-editor-toolbar .rich-preview-button {
-  margin-right: auto;
+.rich-editor-btn:focus-visible {
+  outline: 2px solid #7fc4b8;
+  outline-offset: 1px;
+}
+
+.rich-editor-btn.is-active {
   background: var(--teal);
   color: #fff;
-  border-color: var(--teal)
+  border-color: var(--teal);
+  box-shadow: 0 2px 6px rgba(35, 107, 101, .18);
 }
 
+.rich-editor-btn span {
+  white-space: nowrap;
+}
+
+/* Tooltip on hover — helps beginners understand each button */
+.rich-editor-btn[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #18312f;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 6px 9px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s ease .15s;
+  z-index: 20;
+  box-shadow: 0 4px 12px rgba(24, 49, 47, .25);
+}
+
+.rich-editor-btn[data-tooltip]:hover::after,
+.rich-editor-btn[data-tooltip]:focus-visible::after {
+  opacity: 1;
+}
+
+/* Editing surface */
 .rich-editor-input {
+  display: block;
   border: 0;
   border-radius: 0;
-  min-height: 320px;
-  resize: vertical;
-  display: block
 }
 
-.rich-editor-input:focus {
-  outline: 2px solid #b9ded4;
-  outline-offset: -2px
-}
-
-.rich-editor-preview {
-  min-height: 320px;
-  padding: 18px 20px
-}
-
-.rich-editor-preview h3,
-.rich-editor-preview h4 {
-  color: var(--ink);
-  margin: 12px 0
-}
-
-.rich-editor-preview p {
-  margin: 0 0 14px
-}
-
-.rich-editor-help {
-  padding: 8px 12px;
-  color: var(--muted);
-  font-size: 11px;
-  border-top: 1px solid var(--line);
-  background: #fbfdfc
-}
-
-.rich-editor-input {
+.rich-editor-input .rich-editor-prose {
   min-height: 340px;
-  padding: 18px 20px;
+  padding: 20px 22px;
   line-height: 2;
   direction: rtl;
   text-align: right;
   cursor: text;
   outline: none;
-  overflow-wrap: anywhere
+  overflow-wrap: anywhere;
+  caret-color: var(--teal);
+  scroll-margin-top: 1rem;
 }
 
-.rich-editor-input:empty:before {
-  content: attr(data-placeholder);
+.rich-editor-input .rich-editor-prose:focus {
+  box-shadow: inset 0 0 0 2px #b9ded4;
+}
+
+.rich-editor-input .rich-editor-prose:empty::before {
+  content: "متن خود را اینجا بنویسید…";
   color: #9aaba7;
-  pointer-events: none
+  pointer-events: none;
 }
 
-.rich-editor-input h2 {
+.rich-editor-input .rich-editor-prose p {
+  margin: 0 0 12px;
+}
+
+.rich-editor-input .rich-editor-prose h2 {
   font-size: 25px;
   line-height: 1.5;
-  margin: 18px 0 8px;
-  color: var(--ink)
+  margin: 20px 0 10px;
+  color: var(--ink);
+  border-right: 3px solid var(--teal);
+  padding-right: 10px;
 }
 
-.rich-editor-input h3 {
+.rich-editor-input .rich-editor-prose h3 {
   font-size: 20px;
   line-height: 1.5;
   margin: 16px 0 8px;
-  color: var(--ink)
+  color: var(--ink);
 }
 
-.rich-editor-input p {
-  margin: 0 0 12px
-}
-
-.rich-editor-input blockquote {
+.rich-editor-input .rich-editor-prose blockquote {
   border-right: 3px solid var(--gold);
-  padding: 8px 16px;
+  padding: 10px 16px;
   margin: 14px 0;
   color: #4d625e;
   background: #fbf8f3;
-  border-radius: 6px
+  border-radius: 6px;
 }
 
-.rich-editor-input ul {
+.rich-editor-input .rich-editor-prose ul {
   list-style-type: disc;
   padding-right: 25px;
-  margin: 8px 0
+  margin: 8px 0;
 }
 
-.rich-editor-input ol {
+.rich-editor-input .rich-editor-prose ol {
   list-style-type: decimal;
   padding-right: 25px;
-  margin: 8px 0
+  margin: 8px 0;
 }
 
-.rich-editor-input li {
-  margin: 5px 0
+.rich-editor-input .rich-editor-prose li {
+  margin: 5px 0;
 }
 
-.rich-editor-tip {
+/* Status bar: shows what block the cursor is inside */
+.rich-editor-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-top: 1px solid var(--line);
+  background: #fbfdfc;
+  font-size: 12px;
   color: var(--muted);
-  font-size: 11px;
-  margin-right: auto
 }
 
-.rich-editor-toolbar button {
-  min-height: 38px;
-  padding: 6px 12px;
-  font-weight: 600
+.rich-editor-status-label {
+  opacity: .75;
 }
 
-.admin-editor {
-  width: 100%;
-  max-width: 820px
+.rich-editor-status-value {
+  color: var(--teal);
+  font-weight: 700;
 }
 
-.admin-editor>label {
-  gap: 7px
+.rich-editor-status-active {
+  color: var(--ink);
+  font-weight: 600;
 }
 
-.admin-editor .button-primary {
-  min-height: 48px;
-  font-size: 15px;
-  width: 100%;
-  margin-top: 6px
+/* Helper footer */
+.rich-editor-help {
+  padding: 9px 14px;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.7;
+  border-top: 1px solid var(--line);
+  background: #fbfdfc;
 }
 
-@media(max-width:600px) {
-  .admin-shell {
-    padding: 28px 0
-  }
-
-  .admin-shell h1 {
-    font-size: 28px;
-    line-height: 1.4;
-    margin: 8px 0
-  }
-
-  .admin-editor {
-    gap: 13px
-  }
-
+/* Mobile tweaks: bigger tap targets, labels become icon-only under 520px */
+@media (max-width: 600px) {
   .rich-editor-toolbar {
+    padding: 6px;
+    gap: 4px;
     position: sticky;
     top: 0;
-    z-index: 2;
-    padding: 8px;
-    gap: 6px
   }
 
-  .rich-editor-toolbar button {
+  .rich-editor-sep {
+    display: none;
+  }
+
+  .rich-editor-group {
+    gap: 3px;
+  }
+
+  .rich-editor-btn {
     flex: 1 1 auto;
-    min-width: 64px
+    justify-content: center;
+    padding: 8px 6px;
+    min-height: 40px;
   }
 
-  .rich-editor-tip {
-    display: none
+  .rich-editor-btn span {
+    display: none;
   }
 
-  .rich-editor-input {
+  .rich-editor-input .rich-editor-prose {
     min-height: 300px;
     padding: 14px;
-    font-size: 16px
+    font-size: 16px;
   }
-
-  .rich-editor-help {
-    font-size: 11px;
-    line-height: 1.7
-  }
-
-  .editor-row {
-    grid-template-columns: 1fr
-  }
-
-  .admin-actions {
-    flex-direction: column;
-    align-items: stretch
-  }
-
-  .admin-actions .button {
-    width: 100%
-  }
-
-  .seo-details {
-    padding: 12px
-  }
-}
-
-.rich-editor-input .rich-editor-prose {
-  min-height: 340px;
-  padding: 18px 20px;
-  line-height: 2;
-  direction: rtl;
-  text-align: right;
-  cursor: text;
-  outline: none;
-  overflow-wrap: anywhere
-}
-
-.rich-editor-input .rich-editor-prose p {
-  margin: 0 0 12px
-}
-
-.rich-editor-input .rich-editor-prose h2 {
-  font-size: 25px;
-  line-height: 1.5;
-  margin: 18px 0 8px;
-  color: var(--ink)
-}
-
-.rich-editor-input .rich-editor-prose h3 {
-  font-size: 20px;
-  line-height: 1.5;
-  margin: 16px 0 8px;
-  color: var(--ink)
-}
-
-.rich-editor-input .rich-editor-prose blockquote {
-  border-right: 3px solid var(--gold);
-  padding: 8px 16px;
-  margin: 14px 0;
-  color: #4d625e;
-  background: #fbf8f3;
-  border-radius: 6px
-}
-
-.rich-editor-input .rich-editor-prose ul {
-  list-style-type: disc;
-  padding-right: 25px;
-  margin: 8px 0
-}
-
-.rich-editor-input .rich-editor-prose ol {
-  list-style-type: decimal;
-  padding-right: 25px;
-  margin: 8px 0
-}
-
-.rich-editor-input .rich-editor-prose li {
-  margin: 5px 0
-}
-
-.rich-editor-toolbar button.is-active {
-  background: var(--teal);
-  color: #fff;
-  border-color: var(--teal)
-}
-
-.rich-editor-input .rich-editor-prose {
-  min-height: 340px;
-  padding: 18px 20px;
-  line-height: 2;
-  direction: rtl;
-  text-align: right;
-  cursor: text;
-  outline: none;
-  overflow-wrap: anywhere
-}
-
-.rich-editor-input .rich-editor-prose p {
-  margin: 0 0 12px
-}
-
-.rich-editor-input .rich-editor-prose h2 {
-  font-size: 25px;
-  line-height: 1.5;
-  margin: 18px 0 8px;
-  color: var(--ink)
-}
-
-.rich-editor-input .rich-editor-prose h3 {
-  font-size: 20px;
-  line-height: 1.5;
-  margin: 16px 0 8px;
-  color: var(--ink)
-}
-
-.rich-editor-input .rich-editor-prose blockquote {
-  border-right: 3px solid var(--gold);
-  padding: 8px 16px;
-  margin: 14px 0;
-  color: #4d625e;
-  background: #fbf8f3;
-  border-radius: 6px
-}
-
-.rich-editor-input .rich-editor-prose ul {
-  list-style-type: disc;
-  padding-right: 25px;
-  margin: 8px 0
-}
-
-.rich-editor-input .rich-editor-prose ol {
-  list-style-type: decimal;
-  padding-right: 25px;
-  margin: 8px 0
-}
-
-.rich-editor-input .rich-editor-prose li {
-  margin: 5px 0
-}
-
-.rich-editor-toolbar button.is-active {
-  background: var(--teal);
-  color: #fff;
-  border-color: var(--teal)
-}
-
-.rich-editor-toolbar {
-  position: relative !important;
-  top: auto !important
-}
-
-.rich-editor-input .rich-editor-prose {
-  scroll-margin-top: 1rem;
-  caret-color: var(--teal)
-}
-
-.article-content-field {
-  display: grid;
-  gap: 7px;
-  min-width: 0
-}
-
-.article-content-field>span {
-  font-size: 13px;
-  color: var(--muted)
 }
