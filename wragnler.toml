@@ -1,0 +1,17 @@
+name = "arevan"
+main = "dist/_worker.js/index.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[[routes]]
+pattern = "arevan.ir"
+zone_name = "arevan.ir"
+custom_domain = true
+
+[[kv_namespaces]]
+binding = "VINEXT_KV_CACHE"
+id = "7a4c6d5da58b4e8cb0393ae3a0a092df"
+
+[observability]
+[observability.logs]
+enabled = true
