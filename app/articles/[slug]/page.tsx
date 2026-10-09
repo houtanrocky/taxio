@@ -78,6 +78,7 @@ function normalizeArticleMarkdown(value: string): string {
     .replace(/([^\n])\s+(#{2,4}\s)/g, "$1\n\n$2")
     .replace(/([^\n])\s+(>\s)/g, "$1\n\n$2")
     .replace(/([^\n])\s+(-\s)/g, "$1\n\n$2")
+    .replace(/([^\n])\s+(---+)/g, "$1\n\n$2")
     .split("\n")
     .map(line =>
       line
@@ -203,6 +204,11 @@ export default async function ArticlePage({ params }: Readonly<{ params: Promise
           <div className="prose">
             {blocks.map((block, index) => {
               const keyPrefix = `block-${index}`;
+
+              if (block === "---") {
+                return <hr key={`hr-${index}`} />;
+              }
+
               if (/^#{2,4} /.test(block)) {
                 const heading = block.replace(/^#{2,4} /, "");
                 const headingIndex = headings.indexOf(heading);

@@ -15,6 +15,7 @@ import {
   Heading2,
   Heading3,
   Heading4,
+  Minus,
   Quote,
 } from "lucide-react";
 
@@ -38,12 +39,15 @@ function markdownToHtml(value: string) {
     .replace(/([^\n])\s+(#{2,4}\s)/g, "$1\n\n$2")
     .replace(/([^\n])\s+(>\s)/g, "$1\n\n$2")
     .replace(/([^\n])\s+(-\s)/g, "$1\n\n$2")
-    .replace(/([^\n])\s+(\d+\.\s)/g, "$1\n\n$2");
+    .replace(/([^\n])\s+(\d+\.\s)/g, "$1\n\n$2")
+    .replace(/([^\n])\s+(---+)/g, "$1\n\n$2");
 
   normalized = normalized.replace(/\n{3,}/g, "\n\n").trim();
 
   const blocks = normalized.split(/\n\n+/);
   return blocks.map(block => {
+    if (block === "---" || block === "***" || block === "___") return "<hr>";
+
     const lines = block.split("\n").filter(l => l.length > 0);
 
     if (lines.length > 0 && lines.every(line => /^-\s/.test(line))) {
@@ -108,6 +112,8 @@ function htmlToMarkdown(html: string) {
       blocks.push(`### ${inlineToMarkdown(node).trim()}`);
     } else if (tag === "h4") {
       blocks.push(`#### ${inlineToMarkdown(node).trim()}`);
+    } else if (tag === "hr") {
+      blocks.push("---");
     } else if (tag === "blockquote") {
       blocks.push(`> ${inlineToMarkdown(node).trim()}`);
     } else if (tag === "p") {
@@ -121,7 +127,7 @@ function htmlToMarkdown(html: string) {
   return blocks.filter(Boolean).join("\n\n").trim();
 }
 
-type BlockKind = "paragraph" | "h2" | "h3" | "h4" | "blockquote" | "bulletList" | "orderedList";
+type BlockKind = "paragraph" | "h2" | "h3" | "h4" | "blockquote" | "bulletList" | "orderedList" | "hr";
 
 export function RichTextEditor({ name, initialValue = "", error }: Props) {
   const [value, setValue] = useState(initialValue);
@@ -158,6 +164,7 @@ export function RichTextEditor({ name, initialValue = "", error }: Props) {
     else if (ed.isActive("blockquote")) setActiveBlock("blockquote");
     else if (ed.isActive("bulletList")) setActiveBlock("bulletList");
     else if (ed.isActive("orderedList")) setActiveBlock("orderedList");
+    else if (ed.isActive("horizontalRule")) setActiveBlock("hr");
     else setActiveBlock("paragraph");
 
     setIsBold(ed.isActive("bold"));
@@ -233,6 +240,15 @@ export function RichTextEditor({ name, initialValue = "", error }: Props) {
           >
             <Heading4 size={16} aria-hidden />
             <span>عنوان ۴</span>
+          </ToolbarButton>
+          <ToolbarButton
+            label="خط جداکننده"
+            hint="جدا کردن بخش‌ها"
+            onClick={() => editor?.chain().focus().setHorizontalRule().run()}
+            isActive={activeBlock === "hr"}
+          >
+            <Minus size={16} aria-hidden />
+            <span>خط</span>
           </ToolbarButton>
           <ToolbarButton
             label="نقل قول"
@@ -327,6 +343,7 @@ export function RichTextEditor({ name, initialValue = "", error }: Props) {
           {activeBlock === "blockquote" && "نقل قول"}
           {activeBlock === "bulletList" && "فهرست نقطه‌ای"}
           {activeBlock === "orderedList" && "فهرست شماره‌دار"}
+          {activeBlock === "hr" && "خط جداکننده"}
         </span>
         {(isBold || isItalic) && (
           <span className="rich-editor-status-active">

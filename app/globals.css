@@ -541,11 +541,16 @@ nav a:hover,
 .prose h4 {
   font-size: 18px;
   margin-top: 22px;
-  margin-bottom: 6px;
 }
 
 .prose p {
   color: #3a4e4b
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 32px 0;
 }
 
 .prose blockquote {
@@ -1131,6 +1136,16 @@ nav a:hover,
   line-height: 1.5;
   margin: 14px 0 6px;
   color: var(--ink);
+}
+
+.rich-editor-input .rich-editor-prose hr {
+  border: 0;
+  border-top: 1px solid #d7e5e0;
+  margin: 22px 0;
+}
+
+.rich-editor-input .rich-editor-prose hr.ProseMirror-selectednode {
+  border-top-color: var(--teal);
 }
 
 .rich-editor-input .rich-editor-prose blockquote {
