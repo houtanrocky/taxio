@@ -75,11 +75,16 @@ function renderInline(text: string): React.ReactNode[] {
 function normalizeArticleMarkdown(value: string): string {
   return value
     .replace(/\r\n/g, "\n")
-    .replace(/([^\n])\s+(#{2,3}\s)/g, "$1\n\n$2")
+    .replace(/([^\n])\s+(#{2,4}\s)/g, "$1\n\n$2")
     .replace(/([^\n])\s+(>\s)/g, "$1\n\n$2")
     .replace(/([^\n])\s+(-\s)/g, "$1\n\n$2")
     .split("\n")
-    .map(line => line.replace(/^(##\s+)+/, "## ").replace(/^(###\s+)+/, "### "))
+    .map(line =>
+      line
+        .replace(/^(##\s+)+/, "## ")
+        .replace(/^(###\s+)+/, "### ")
+        .replace(/^(####\s+)+/, "#### ")
+    )
     .join("\n");
 }
 
@@ -142,8 +147,8 @@ export default async function ArticlePage({ params }: Readonly<{ params: Promise
 
   const blocks = normalizeArticleMarkdown(article.content).split("\n\n");
   const headings = blocks
-    .filter(block => block.startsWith("## ") || block.startsWith("### "))
-    .map(block => block.replace(/^#{2,3} /, ""));
+    .filter(block => /^#{2,4} /.test(block))
+    .map(block => block.replace(/^#{2,4} /, ""));
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -198,10 +203,17 @@ export default async function ArticlePage({ params }: Readonly<{ params: Promise
           <div className="prose">
             {blocks.map((block, index) => {
               const keyPrefix = `block-${index}`;
-              if (block.startsWith("## ") || block.startsWith("### ")) {
-                const heading = block.replace(/^#{2,3} /, "");
+              if (/^#{2,4} /.test(block)) {
+                const heading = block.replace(/^#{2,4} /, "");
                 const headingIndex = headings.indexOf(heading);
                 const headingKey = `heading-${headingIndex}-${heading.slice(0, 24)}`;
+                if (block.startsWith("#### ")) {
+                  return (
+                    <h4 id={`section-${headingIndex}`} key={headingKey}>
+                      {renderInline(heading)}
+                    </h4>
+                  );
+                }
                 return block.startsWith("## ") ? (
                   <h2 id={`section-${headingIndex}`} key={headingKey}>
                     {renderInline(heading)}

@@ -14,6 +14,7 @@ import {
   Pilcrow,
   Heading2,
   Heading3,
+  Heading4,
   Quote,
 } from "lucide-react";
 
@@ -34,7 +35,7 @@ function inlineHtml(value: string) {
 function markdownToHtml(value: string) {
   let normalized = value
     .replace(/\r\n/g, "\n")
-    .replace(/([^\n])\s+(#{2,3}\s)/g, "$1\n\n$2")
+    .replace(/([^\n])\s+(#{2,4}\s)/g, "$1\n\n$2")
     .replace(/([^\n])\s+(>\s)/g, "$1\n\n$2")
     .replace(/([^\n])\s+(-\s)/g, "$1\n\n$2")
     .replace(/([^\n])\s+(\d+\.\s)/g, "$1\n\n$2");
@@ -51,6 +52,7 @@ function markdownToHtml(value: string) {
     if (lines.length > 0 && lines.every(line => /^\d+\.\s/.test(line))) {
       return `<ol>${lines.map(line => `<li>${inlineHtml(line.replace(/^\d+\.\s/, ""))}</li>`).join("")}</ol>`;
     }
+    if (block.startsWith("#### ")) return `<h4>${inlineHtml(block.slice(5))}</h4>`;
     if (block.startsWith("### ")) return `<h3>${inlineHtml(block.slice(4))}</h3>`;
     if (block.startsWith("## ")) return `<h2>${inlineHtml(block.slice(3))}</h2>`;
     if (block.startsWith("> ")) return `<blockquote>${inlineHtml(block.slice(2))}</blockquote>`;
@@ -104,6 +106,8 @@ function htmlToMarkdown(html: string) {
       blocks.push(`## ${inlineToMarkdown(node).trim()}`);
     } else if (tag === "h3") {
       blocks.push(`### ${inlineToMarkdown(node).trim()}`);
+    } else if (tag === "h4") {
+      blocks.push(`#### ${inlineToMarkdown(node).trim()}`);
     } else if (tag === "blockquote") {
       blocks.push(`> ${inlineToMarkdown(node).trim()}`);
     } else if (tag === "p") {
@@ -117,7 +121,7 @@ function htmlToMarkdown(html: string) {
   return blocks.filter(Boolean).join("\n\n").trim();
 }
 
-type BlockKind = "paragraph" | "h2" | "h3" | "blockquote" | "bulletList" | "orderedList";
+type BlockKind = "paragraph" | "h2" | "h3" | "h4" | "blockquote" | "bulletList" | "orderedList";
 
 export function RichTextEditor({ name, initialValue = "", error }: Props) {
   const [value, setValue] = useState(initialValue);
@@ -150,6 +154,7 @@ export function RichTextEditor({ name, initialValue = "", error }: Props) {
   function syncToolbar(ed: NonNullable<typeof editor>) {
     if (ed.isActive("heading", { level: 2 })) setActiveBlock("h2");
     else if (ed.isActive("heading", { level: 3 })) setActiveBlock("h3");
+    else if (ed.isActive("heading", { level: 4 })) setActiveBlock("h4");
     else if (ed.isActive("blockquote")) setActiveBlock("blockquote");
     else if (ed.isActive("bulletList")) setActiveBlock("bulletList");
     else if (ed.isActive("orderedList")) setActiveBlock("orderedList");
@@ -219,6 +224,15 @@ export function RichTextEditor({ name, initialValue = "", error }: Props) {
           >
             <Heading3 size={16} aria-hidden />
             <span>زیرعنوان</span>
+          </ToolbarButton>
+          <ToolbarButton
+            label="عنوان چهارم"
+            hint="تیتر سطح چهارم"
+            onClick={() => editor?.chain().focus().setNode("heading", { level: 4 }).run()}
+            isActive={activeBlock === "h4"}
+          >
+            <Heading4 size={16} aria-hidden />
+            <span>عنوان ۴</span>
           </ToolbarButton>
           <ToolbarButton
             label="نقل قول"
@@ -309,6 +323,7 @@ export function RichTextEditor({ name, initialValue = "", error }: Props) {
           {activeBlock === "paragraph" && "متن ساده"}
           {activeBlock === "h2" && "عنوان بزرگ"}
           {activeBlock === "h3" && "عنوان کوچک"}
+          {activeBlock === "h4" && "عنوان چهارم"}
           {activeBlock === "blockquote" && "نقل قول"}
           {activeBlock === "bulletList" && "فهرست نقطه‌ای"}
           {activeBlock === "orderedList" && "فهرست شماره‌دار"}

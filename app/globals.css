@@ -538,6 +538,12 @@ nav a:hover,
   margin-top: 28px
 }
 
+.prose h4 {
+  font-size: 18px;
+  margin-top: 22px;
+  margin-bottom: 6px;
+}
+
 .prose p {
   color: #3a4e4b
 }
@@ -1117,6 +1123,13 @@ nav a:hover,
   font-size: 20px;
   line-height: 1.5;
   margin: 16px 0 8px;
+  color: var(--ink);
+}
+
+.rich-editor-input .rich-editor-prose h4 {
+  font-size: 17px;
+  line-height: 1.5;
+  margin: 14px 0 6px;
   color: var(--ink);
 }
 
