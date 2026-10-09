@@ -1,0 +1,36 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "arevan",
+  "main": ".cloudflare/output/v0/workers/default/bundle/index.js",
+  "compatibility_date": "2026-10-06",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "directory": ".cloudflare/output/v0/workers/default/assets",
+    "binding": "ASSETS",
+    "not_found_handling": "none"
+  },
+  "routes": [
+    {
+      "pattern": "arevan.ir",
+      "zone_name": "arevan.ir",
+      "enabled": true,
+      "previews_enabled": false,
+      "custom_domain": true
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "id": "7a4c6d5da58b4e8cb0393ae3a0a092df",
+      "binding": "VINEXT_KV_CACHE"
+    }
+  ],
+  "observability": {
+    "logs": {
+      "enabled": true
+    }
+  }
+}
