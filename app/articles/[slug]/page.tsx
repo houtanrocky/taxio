@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { articles as fallbackArticles, brand } from "../../../lib/content";
 import { databaseConfigured, getArticleBySlug, getPublishedArticles } from "../../../lib/content-server";
+import { ArticleVisits } from "../../../components/ArticleVisits";
+import { ArticleRating } from "../../../components/ArticleRating";
 import { ArticleCard } from "../../../components/ArticleCard";
 
 /**
@@ -160,6 +162,15 @@ export default async function ArticlePage({ params }: Readonly<{ params: Promise
     publisher: { "@type": "Organization", name: "آروان | Arevan" },
     ...(article.updatedAtIso ? { dateModified: article.updatedAtIso } : {}),
     ...(article.publishedAtIso ? { datePublished: article.publishedAtIso } : {}),
+    ...(article.ratingCount > 0 ? {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: (article.ratingTotal / article.ratingCount).toFixed(1),
+        bestRating: "5",
+        worstRating: "1",
+        ratingCount: article.ratingCount,
+      },
+    } : {}),
   };
 
   const related = (await getPublishedArticles()).filter(item => item.slug !== article.slug).slice(0, 2);
@@ -240,6 +251,10 @@ export default async function ArticlePage({ params }: Readonly<{ params: Promise
               }
               return <p key={`p-${index}-${block.slice(0, 20)}`}>{renderInline(block)}</p>;
             })}
+          </div>
+          <div className="article-info-box">
+            <ArticleVisits key={article.slug} slug={article.slug} initialVisits={article.visits} />
+            <ArticleRating slug={article.slug} total={article.ratingTotal} count={article.ratingCount} />
           </div>
           <div className="author-box">
             <span className="eyebrow">ناشر محتوا</span>

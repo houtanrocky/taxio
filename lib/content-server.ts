@@ -24,7 +24,7 @@ function toCategory(row: { name: string; slug: string; description: string | nul
 }
 
 function mapArticle(row: typeof articleTable.$inferSelect, category: Category): ArticleRecord {
-  return { id: row.id, title: row.title, slug: row.slug, excerpt: row.excerpt, shortAnswer: row.shortAnswer ?? "", content: row.content, category, publishedAt: formatDate(row.publishedAt), updatedAt: formatDate(row.updatedAt), publishedAtIso: toIso(row.publishedAt), updatedAtIso: toIso(row.updatedAt), readingTime: row.readingTime ?? 5, featured: row.featured, status: row.status, seoTitle: row.seoTitle, seoDescription: row.seoDescription, canonicalUrl: row.canonicalUrl };
+  return { id: row.id, title: row.title, slug: row.slug, excerpt: row.excerpt, shortAnswer: row.shortAnswer ?? "", content: row.content, category, publishedAt: formatDate(row.publishedAt), updatedAt: formatDate(row.updatedAt), publishedAtIso: toIso(row.publishedAt), updatedAtIso: toIso(row.updatedAt), readingTime: row.readingTime ?? 5, visits: row.visits, ratingTotal: row.ratingTotal, ratingCount: row.ratingCount, featured: row.featured, status: row.status, seoTitle: row.seoTitle, seoDescription: row.seoDescription, canonicalUrl: row.canonicalUrl };
 }
 
 function uniqueBySlug(items: ArticleRecord[]) {
