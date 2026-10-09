@@ -2,6 +2,7 @@
 
 import { useActionState, useMemo, useState } from "react";
 import type { ArticleActionState } from "../app/admin/actions";
+import { RichTextEditor } from "./RichTextEditor";
 
 type CategoryOption = { slug: string; name: string };
 type InitialValues = { title?: string; slug?: string; categorySlug?: string; excerpt?: string; shortAnswer?: string; content?: string; seoTitle?: string; seoDescription?: string; readingTime?: number; status?: string };
@@ -40,12 +41,13 @@ export function AdminArticleForm({ action, categories, initial = {}, submitLabel
   return <form className="form-grid admin-editor" action={formAction} onSubmit={event => { if (!validate(event.currentTarget)) event.preventDefault(); }} noValidate>
     {Object.keys(errors).length > 0 && <div className="form-error" role="alert"><strong>لطفاً این موارد را اصلاح کنید:</strong><ul>{Object.values(errors).map(error => <li key={error}>{error}</li>)}</ul></div>}
     {serverState.error === "slug" && <div className="form-error" role="alert">این slug قبلاً استفاده شده است. یک نشانی متفاوت انتخاب کنید.</div>}
-    <label>عنوان مقاله<input className="input" name="title" value={title} onChange={event => handleTitleChange(event.target.value)} aria-invalid={Boolean(errors.title)} autoFocus required/><small className="field-hint">عنوان واضح و پاسخ‌محور، شانس دیده‌شدن و خوانده‌شدن مقاله را بیشتر می‌کند.</small></label>
+    <label>عنوان مقاله<input className="input" name="title" value={title} onChange={event => handleTitleChange(event.target.value)} aria-invalid={Boolean(errors.title)} required/><small className="field-hint">عنوانی ساده بنویسید که پاسخ مقاله را روشن کند.</small></label>
     <label>نشانی یکتا (slug)<input className="input" name="slug" value={slug} onChange={event => { setSlugEdited(true); setSlug(normalizeSlug(event.target.value)); }} aria-invalid={Boolean(errors.slug)} required/><small className="field-hint">{slugEdited ? "این نشانی با حذف فاصله‌ها و نویسه‌های نامعتبر نرمال می‌شود." : `پیشنهاد خودکار: ${normalizedPreview || "پس از نوشتن عنوان ساخته می‌شود"}`}</small></label>
     <label>دسته‌بندی<select className="select" name="categoryId" defaultValue={initial.categorySlug ?? ""} aria-invalid={Boolean(errors.categoryId)} required><option value="">انتخاب دسته‌بندی</option>{categories.map(category => <option value={category.slug} key={category.slug}>{category.name}</option>)}</select></label>
     <label>خلاصه مقاله<textarea className="textarea" name="excerpt" defaultValue={initial.excerpt} aria-invalid={Boolean(errors.excerpt)} required minLength={20}/><small className="field-hint">یک خلاصه ۱ تا ۲ جمله‌ای از پاسخ مقاله بنویسید.</small></label>
     <label>پاسخ کوتاه<textarea className="textarea" name="shortAnswer" defaultValue={initial.shortAnswer}/><small className="field-hint">اگر مقاله پاسخ مشخصی دارد، آن را در ابتدای کار کوتاه و روشن بنویسید.</small></label>
-    <label>محتوای مقاله<textarea className="textarea" name="content" defaultValue={initial.content} aria-invalid={Boolean(errors.content)} required minLength={50} style={{minHeight:280}} placeholder="برای تیترها از ## و برای نکته مهم از > استفاده کنید."/><small className="field-hint">پاراگراف‌ها را با یک خط خالی جدا کنید. تیترهای ## و ### در صفحه مقاله به‌صورت ساختاریافته نمایش داده می‌شوند.</small></label>
+    {/* A label here forwards content clicks to the first toolbar button. */}
+    <div className="article-content-field"><span id="article-content-label">محتوای مقاله</span><RichTextEditor name="content" initialValue={initial.content} error={Boolean(errors.content)} /><small className="field-hint">متن را مثل یک پیام بنویسید؛ برای تیتر، پررنگ، نقل قول یا فهرست، متن را انتخاب کنید و دکمه مربوط را بزنید.</small></div>
     <details className="seo-details"><summary>تنظیمات SEO (اختیاری)</summary><div className="form-grid"><label>عنوان SEO<input className="input" name="seoTitle" defaultValue={initial.seoTitle}/><small className="field-hint">اگر خالی بماند، عنوان مقاله استفاده می‌شود.</small></label><label>توضیحات SEO<textarea className="textarea" name="seoDescription" defaultValue={initial.seoDescription}/><small className="field-hint">یک توضیح دقیق و کوتاه برای نتیجه جستجو بنویسید.</small></label></div></details>
     <div className="editor-row"><label>زمان مطالعه (دقیقه)<input className="input" name="readingTime" type="number" defaultValue={initial.readingTime ?? 5} min={1} max={180}/></label><label>وضعیت<select className="select" name="status" defaultValue={initial.status ?? "draft"}><option value="draft">پیش‌نویس</option><option value="published">انتشار</option></select></label></div>
     <button className="button button-primary" type="submit" disabled={pending}>{pending ? "در حال ذخیره…" : submitLabel}</button>

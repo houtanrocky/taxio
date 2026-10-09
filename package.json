@@ -21,6 +21,8 @@
         "@cloudflare/workers-response-store": "^1.0.1",
         "@neondatabase/serverless": "^0.10.4",
         "@next/env": "^16.0.0",
+        "@tiptap/react": "^3.31.4",
+        "@tiptap/starter-kit": "^3.31.4",
         "@vinext/cloudflare": "^1.0.1",
         "drizzle-orm": "^0.36.4",
         "lucide-react": "^0.468.0",
